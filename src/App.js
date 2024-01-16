@@ -3,27 +3,47 @@ import { useState } from 'react';
 function App() {
   const [animalName, setAnimalName] = useState('');
   const [animalData, setAnimalData] = useState(null);
+  const [favoriteAnimals, setFavoriteAnimals] = useState(
+    JSON.parse(localStorage.getItem('favorites')) || []
+  );
+  const [cache, setCache] = useState(
+    JSON.parse(localStorage.getItem('cache')) || {}
+  );
 
   const searchForAnimal = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(
-        `https://api.api-ninjas.com/v1/animals?name=${animalName}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Api-Key': process.env.REACT_APP_API_KEY,
-          },
-        }
-      );
+      if (cache[animalName]) {
+        // If the item is in the cache, use the cached data
+        setAnimalData(cache[animalName]);
+      } else {
+        const response = await fetch(
+          `https://api.api-ninjas.com/v1/animals?name=${animalName}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Api-Key': process.env.REACT_APP_API_KEY,
+            },
+          }
+        );
 
-      const data = await response.json();
-      setAnimalData(data);
+        const data = await response.json();
+        setAnimalData(data);
+
+        // Update the cache
+        setCache({ ...cache, [animalName]: data });
+
+        // Store updated cache in the localStorage
+        localStorage.setItem(
+          'cache',
+          JSON.stringify({ ...cache, [animalName]: data })
+        );
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-  }
+  };
 
   const renderCharacteristics = (characteristics) => {
     return (
@@ -37,6 +57,24 @@ function App() {
         ))}
       </ul>
     );
+  }
+
+  const addToFavorites = (item) => {
+    if (animalData[item]) {
+      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      favorites.push(animalData[item]);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      setFavoriteAnimals(favorites);
+    }
+  }
+
+  const removeFromFavorites = (item) => {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const updatedFavorites = favorites.filter(
+      (favorite) => favorite.name !== item
+    );
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    setFavoriteAnimals(updatedFavorites);
   }
 
   return (
@@ -99,11 +137,48 @@ function App() {
                           animalData[index].characteristics
                         )}
                       </ul>
+                      {/* Add a button to add the animal to favorites only if it is not already in the favorites array */}
+                      {JSON.parse(localStorage.getItem('favorites'))?.some(
+                        (favorite) => favorite.name === animal.name
+                      ) ? (
+                        <p className="text-red-500 font-bold mt-2">
+                          The animal is already added to favorites list
+                        </p>
+                      ) : (
+                        <button
+                          className="bg-blue-500 text-white rounded-md px-4 py-2 mt-6"
+                          onClick={() => addToFavorites(index)}
+                        >
+                          Add to Favorites
+                        </button>
+                      )}
                     </div>
                   ))}
                 </>
               )}
             </div>
+          </div>
+          <div className="w-1/2">
+            <h2 className="text-2xl font-bold text-center mt-6">
+              Favorites List
+            </h2>
+            {favoriteAnimals?.map((favorite, index) => (
+              <ul key={index}>
+                <li key={index}>
+                  <h3 className="text-2xl font-bold my-6">
+                    {index + 1}. {favorite.name}
+                  </h3>
+                  <p className="text-xl font-bold my-2">Characteristics</p>
+                  <ul>{renderCharacteristics(favorite.characteristics)}</ul>
+                  <button
+                    className="bg-red-500 text-white rounded-md px-4 py-2 mt-6"
+                    onClick={() => removeFromFavorites(favorite.name)}
+                  >
+                    Remove from Favorites
+                  </button>
+                </li>
+              </ul>
+            ))}
           </div>
         </div>
       </div>
