@@ -15,6 +15,7 @@ function App() {
 
   const searchForAnimal = async (event) => {
     event.preventDefault();
+
     try {
       if (cache[animalName]) {
         // If the item is in the cache, use the cached data
@@ -99,7 +100,7 @@ function App() {
             <h3 className="text-2xl font-bold text-center mt-6">
               Search for an animal
             </h3>
-            <form className='flex'>
+            <form className='flex' role='search'>
               <label htmlFor="name" className='mt-6 text-center'>
                 <input
                   type="text"
@@ -170,7 +171,7 @@ function App() {
               )}
             </div>
           </div>
-          <div className="w-1/2">
+          <div className="w-1/2" role='list'>
             <h2 className="text-2xl font-bold text-center mt-6">
               Favorites List
             </h2>
