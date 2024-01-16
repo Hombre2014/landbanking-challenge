@@ -9,6 +9,7 @@ function App() {
   const [cache, setCache] = useState(
     JSON.parse(localStorage.getItem('cache')) || {}
   );
+  const [rating, setRating] = useState(0);
 
   const searchForAnimal = async (event) => {
     event.preventDefault();
@@ -57,7 +58,7 @@ function App() {
         ))}
       </ul>
     );
-  }
+  };
 
   const addToFavorites = (item) => {
     if (animalData[item]) {
@@ -75,7 +76,15 @@ function App() {
     );
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     setFavoriteAnimals(updatedFavorites);
-  }
+  };
+
+  const handleRating = (item, value) => {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    favorites[item].rating = value;
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    setFavoriteAnimals(favorites);
+    setRating(value);
+  };
 
   return (
     <>
@@ -168,6 +177,23 @@ function App() {
                   <h3 className="text-2xl font-bold my-6">
                     {index + 1}. {favorite.name}
                   </h3>
+                  <p className="text-xl mb-2">Rating: {favorite.rating || 0}</p>
+                  <form>
+                    <label htmlFor="rating">Rating (between 0 and 10):</label>
+                    <br></br>
+                    <input
+                      type="range"
+                      id="rating"
+                      name="rating"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value={favorite.rating || rating}
+                      onChange={(event) =>
+                        handleRating(index, event.target.value)
+                      }
+                    ></input>
+                  </form>
                   <p className="text-xl font-bold my-2">Characteristics</p>
                   <ul>{renderCharacteristics(favorite.characteristics)}</ul>
                   <button
