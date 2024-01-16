@@ -3,9 +3,11 @@ import { useState } from 'react';
 function App() {
   const [animalName, setAnimalName] = useState('');
   const [animalData, setAnimalData] = useState(null);
+
   const [favoriteAnimals, setFavoriteAnimals] = useState(
     JSON.parse(localStorage.getItem('favorites')) || []
   );
+
   const [cache, setCache] = useState(
     JSON.parse(localStorage.getItem('cache')) || {}
   );
@@ -104,7 +106,8 @@ function App() {
                   name="name"
                   id="name"
                   placeholder="Enter an animal's name"
-                  required value={animalName}
+                  required
+                  value={animalName}
                   onChange={(event) => setAnimalName(event.target.value)}
                   className="border-2 outline-10 rounded-md py-2 px-2 bg-gray-100 block mt-4 mr-4"
                 />
