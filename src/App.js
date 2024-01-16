@@ -6,27 +6,44 @@ function App() {
   const [favoriteAnimals, setFavoriteAnimals] = useState(
     JSON.parse(localStorage.getItem('favorites')) || []
   );
+  const [cache, setCache] = useState(
+    JSON.parse(localStorage.getItem('cache')) || {}
+  );
 
   const searchForAnimal = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(
-        `https://api.api-ninjas.com/v1/animals?name=${animalName}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Api-Key': process.env.REACT_APP_API_KEY,
-          },
-        }
-      );
+      if (cache[animalName]) {
+        // If the item is in the cache, use the cached data
+        setAnimalData(cache[animalName]);
+      } else {
+        const response = await fetch(
+          `https://api.api-ninjas.com/v1/animals?name=${animalName}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Api-Key': process.env.REACT_APP_API_KEY,
+            },
+          }
+        );
 
-      const data = await response.json();
-      setAnimalData(data);
+        const data = await response.json();
+        setAnimalData(data);
+
+        // Update the cache
+        setCache({ ...cache, [animalName]: data });
+
+        // Store updated cache in the localStorage
+        localStorage.setItem(
+          'cache',
+          JSON.stringify({ ...cache, [animalName]: data })
+        );
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-  }
+  };
 
   const renderCharacteristics = (characteristics) => {
     return (
