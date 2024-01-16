@@ -51,6 +51,15 @@ function App() {
     }
   }
 
+  const removeFromFavorites = (item) => {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const updatedFavorites = favorites.filter(
+      (favorite) => favorite.name !== item
+    );
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    setFavoriteAnimals(updatedFavorites);
+  }
+
   return (
     <>
       <h1 className="text-3xl font-bold text-center my-6">
@@ -144,6 +153,12 @@ function App() {
                   </h3>
                   <p className="text-xl font-bold my-2">Characteristics</p>
                   <ul>{renderCharacteristics(favorite.characteristics)}</ul>
+                  <button
+                    className="bg-red-500 text-white rounded-md px-4 py-2 mt-6"
+                    onClick={() => removeFromFavorites(favorite.name)}
+                  >
+                    Remove from Favorites
+                  </button>
                 </li>
               </ul>
             ))}
