@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 function App() {
   const [animalName, setAnimalName] = useState('');
-  const [animalData, setAnimalData] = useState({});
+  const [animalData, setAnimalData] = useState(null);
 
   const searchForAnimal = async (event) => {
     event.preventDefault();
@@ -25,6 +25,20 @@ function App() {
     }
   }
 
+  const renderCharacteristics = (characteristics) => {
+    return (
+      <ul className="">
+        {Object.entries(characteristics).map(([key, value]) => (
+          <li key={key} className="mb-1">
+            <div className="flex gap-2">
+              <strong>{key}:</strong> {value}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <>
       <h1 className="text-3xl font-bold text-center my-6">
@@ -38,7 +52,15 @@ function App() {
             </h3>
             <form className='flex'>
               <label htmlFor="name" className='mt-6 text-center'>
-                <input type="text" name="name" id="name" placeholder="Enter an animal's name" required value={animalName} onChange={(event) => setAnimalName(event.target.value)} />
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Enter an animal's name"
+                  required value={animalName}
+                  onChange={(event) => setAnimalName(event.target.value)}
+                  className="border-2 outline-10 rounded-md py-2 px-2 bg-gray-100 block mt-4 mr-4"
+                />
               </label>
               <button
                 type='submit'
@@ -55,6 +77,33 @@ function App() {
                 Clear
               </button>
             </form>
+            <div className="flex flex-col items-start">
+              {animalData && (
+                <>
+                  {animalData.map((animal, index) => (
+                    <div
+                      className="flex flex-col justify-center items-start"
+                      key={index}
+                    >
+                      <h3
+                        className="text-2xl font-bold text-center my-6"
+                        key={index}
+                      >
+                        {index + 1}. {animal.name}
+                      </h3>
+                      <h4 className="text-xl mb-4 font-bold">
+                        Characteristics
+                      </h4>
+                      <ul>
+                        {renderCharacteristics(
+                          animalData[index].characteristics
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
