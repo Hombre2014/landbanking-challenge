@@ -3,9 +3,11 @@ import { useState } from 'react';
 function App() {
   const [animalName, setAnimalName] = useState('');
   const [animalData, setAnimalData] = useState(null);
+
   const [favoriteAnimals, setFavoriteAnimals] = useState(
     JSON.parse(localStorage.getItem('favorites')) || []
   );
+
   const [cache, setCache] = useState(
     JSON.parse(localStorage.getItem('cache')) || {}
   );
@@ -13,6 +15,7 @@ function App() {
 
   const searchForAnimal = async (event) => {
     event.preventDefault();
+
     try {
       if (cache[animalName]) {
         // If the item is in the cache, use the cached data
@@ -97,14 +100,15 @@ function App() {
             <h3 className="text-2xl font-bold text-center mt-6">
               Search for an animal
             </h3>
-            <form className='flex'>
+            <form className='flex' role='search'>
               <label htmlFor="name" className='mt-6 text-center'>
                 <input
                   type="text"
                   name="name"
                   id="name"
                   placeholder="Enter an animal's name"
-                  required value={animalName}
+                  required
+                  value={animalName}
                   onChange={(event) => setAnimalName(event.target.value)}
                   className="border-2 outline-10 rounded-md py-2 px-2 bg-gray-100 block mt-4 mr-4"
                 />
@@ -167,7 +171,7 @@ function App() {
               )}
             </div>
           </div>
-          <div className="w-1/2">
+          <div className="w-1/2" role='list'>
             <h2 className="text-2xl font-bold text-center mt-6">
               Favorites List
             </h2>
