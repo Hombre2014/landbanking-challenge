@@ -39,7 +39,7 @@ You should not write a backend for storage, but you might choose to store data i
 
 ## Live Link
 
-[MyTools.ai](https://my-tools.ai)
+[My favorite animals](https://landbanking-challenge.vercel.app/)
 
 ### Deployment
 
