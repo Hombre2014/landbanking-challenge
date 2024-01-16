@@ -37,6 +37,15 @@ You should not write a backend for storage, but you might choose to store data i
 - Framework: React
 - Tools used: Jest, React Testing Library, React Hooks, Tailwind CSS
 
+## How to use
+
+- Clone the repo: `git clone https://github.com/Hombre2014/landbanking-challenge`
+- Type: `cd landbanking-challenge`
+- Run: `npm install`
+- Start: `npm start`
+- Open a browser and navigate to `http://localhost:3000`
+- Test: `npm test`
+
 ## Live Link
 
 [My favorite animals](https://landbanking-challenge.vercel.app/)
